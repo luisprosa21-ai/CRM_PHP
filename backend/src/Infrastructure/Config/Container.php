@@ -67,6 +67,21 @@ use CRM\Infrastructure\Repository\MySQLUserRepository;
 final class Container
 {
     private array $instances = [];
+    private ContainerProfiler $profiler;
+
+    public function __construct()
+    {
+        $profilerEnabled = filter_var(
+            $_ENV['CONTAINER_PROFILER'] ?? false,
+            FILTER_VALIDATE_BOOLEAN,
+        );
+        $this->profiler = new ContainerProfiler($profilerEnabled);
+    }
+
+    public function getProfiler(): ContainerProfiler
+    {
+        return $this->profiler;
+    }
 
     // ─── Infrastructure ──────────────────────────────────────
 
@@ -272,6 +287,7 @@ final class Container
     {
         if (!isset($this->instances[$key])) {
             $this->instances[$key] = $factory();
+            $this->profiler->logCreation($key, $this->instances[$key]);
         }
         return $this->instances[$key];
     }
