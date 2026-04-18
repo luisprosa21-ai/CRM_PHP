@@ -33,7 +33,7 @@ RUN composer install --no-scripts --no-autoloader --prefer-dist
 # Copy the rest of the application
 COPY . .
 
-# Generate optimised autoload
+# Generate optimized autoload
 RUN composer dump-autoload --optimize
 
 # Create storage directory
