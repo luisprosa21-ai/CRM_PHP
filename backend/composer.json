@@ -1,0 +1,30 @@
+{
+  "name": "crm-hipotecario/backend",
+  "description": "CRM Hipotecario - PHP Backend Core",
+  "type": "project",
+  "require": {
+    "php": ">=8.2",
+    "vlucas/phpdotenv": "^5.5",
+    "firebase/php-jwt": "^7.0",
+    "ramsey/uuid": "^4.7"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "CRM\\Domain\\": "src/Domain/",
+      "CRM\\Application\\": "src/Application/",
+      "CRM\\Infrastructure\\": "src/Infrastructure/"
+    },
+    "classmap": [
+      "src/Domain/Entity/Enums.php",
+      "src/Domain/Event/EventDispatcher.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CRM\\Tests\\": "tests/"
+    }
+  }
+}
