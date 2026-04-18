@@ -1,0 +1,98 @@
+services:
+  # ─── MySQL 8.0 ───────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: crm-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-crm_hipotecario}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ─── Backend PHP (Apache) ────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: crm-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE:-crm_hipotecario}
+      DB_USER: root
+      DB_PASS: ${MYSQL_ROOT_PASSWORD:-root}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-3600}
+      APP_ENV: development
+      APP_DEBUG: "true"
+      UPLOAD_DIR: ./storage/documents
+      MAX_UPLOAD_SIZE: 10485760
+      ALLOWED_ORIGINS: http://localhost:8080,http://localhost:3001
+    ports:
+      - "${BACKEND_PORT:-8000}:80"
+    volumes:
+      - ./backend:/var/www/html
+      # Named volume keeps Composer-installed vendor/ from being overwritten by
+      # the host bind-mount (which may lack vendor/). Run
+      #   docker compose exec backend composer install
+      # after adding new PHP dependencies.
+      - backend_vendor:/var/www/html/vendor
+
+  # ─── BFF Node.js ─────────────────────────────────────────────
+  bff:
+    build:
+      context: ./bff
+      dockerfile: Dockerfile
+    container_name: crm-bff
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      PORT: 3001
+      PHP_BACKEND_URL: http://backend:80
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      NODE_ENV: development
+      LOG_LEVEL: info
+      CACHE_TTL: 300
+      RATE_LIMIT_WINDOW: 900000
+      RATE_LIMIT_MAX: 100
+      BANK_API_TIMEOUT: 30000
+      DOCUMENT_STORAGE_PATH: ./storage
+    ports:
+      - "${BFF_PORT:-3001}:3001"
+    volumes:
+      - ./bff/src:/app/src
+      - ./bff/tests:/app/tests
+
+  # ─── Frontend SPA ────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: crm-frontend
+    restart: unless-stopped
+    depends_on:
+      - bff
+    ports:
+      - "${FRONTEND_PORT:-8080}:8080"
+    volumes:
+      - ./frontend/public:/app/public
+      - ./frontend/src:/app/src
+
+volumes:
+  mysql_data:
+  backend_vendor:
