@@ -71,23 +71,23 @@ export default async function BackofficeReports(params) {
             <div class="metrics-grid">
               <div class="metric-card">
                 <div class="metric-label">Lead → Cliente</div>
-                <div class="metric-value">${escapeHtml(String(data.leadToClient || data.lead_a_cliente || 0))}%</div>
+                <div class="metric-value">${Number(data.leadToClient || data.lead_a_cliente || 0)}%</div>
               </div>
               <div class="metric-card">
                 <div class="metric-label">Cliente → Expediente</div>
-                <div class="metric-value">${escapeHtml(String(data.clientToExpediente || data.cliente_a_expediente || 0))}%</div>
+                <div class="metric-value">${Number(data.clientToExpediente || data.cliente_a_expediente || 0)}%</div>
               </div>
               <div class="metric-card">
                 <div class="metric-label">Expediente → Oferta</div>
-                <div class="metric-value">${escapeHtml(String(data.expedienteToOffer || data.expediente_a_oferta || 0))}%</div>
+                <div class="metric-value">${Number(data.expedienteToOffer || data.expediente_a_oferta || 0)}%</div>
               </div>
               <div class="metric-card">
                 <div class="metric-label">Oferta → Firma</div>
-                <div class="metric-value">${escapeHtml(String(data.offerToClose || data.oferta_a_firma || 0))}%</div>
+                <div class="metric-value">${Number(data.offerToClose || data.oferta_a_firma || 0)}%</div>
               </div>
               <div class="metric-card">
                 <div class="metric-label">Tiempo medio (días)</div>
-                <div class="metric-value">${escapeHtml(String(data.avgDays || data.dias_promedio || 0))}</div>
+                <div class="metric-value">${Number(data.avgDays || data.dias_promedio || 0)}</div>
               </div>
               <div class="metric-card">
                 <div class="metric-label">Volumen cerrado</div>

@@ -1,7 +1,8 @@
 import { crmApi } from '../../services/api.js';
 import { router } from '../../utils/router.js';
 import { escapeHtml, formatDate, getStatusColor, getStatusLabel, timeAgo } from '../../utils/helpers.js';
-import { confirmModal } from '../shared/Modal.js';
+import { openModal, closeModal, confirmModal } from '../shared/Modal.js';
+import renderForm from '../shared/Form.js';
 import * as notify from '../../services/notification.js';
 
 export default async function CrmLeadDetail(params) {
@@ -90,15 +91,28 @@ export default async function CrmLeadDetail(params) {
     // Assign
     const assignBtn = document.getElementById('btn-assign');
     if (assignBtn) {
-      assignBtn.addEventListener('click', async () => {
-        const advisorId = prompt('Introduce el ID del asesor:');
-        if (advisorId) {
-          try {
-            await crmApi.post(`/leads/${id}/assign`, { asesor_id: parseInt(advisorId, 10) });
-            notify.success('Lead asignado');
-            CrmLeadDetail(params);
-          } catch (err) { notify.error('Error al asignar'); }
-        }
+      assignBtn.addEventListener('click', () => {
+        openModal('Asignar Asesor', '<div id="assign-form-container"></div>', []);
+        const formContainer = document.getElementById('assign-form-container') || document.querySelector('.modal-body');
+        renderForm(formContainer, {
+          fields: [
+            { name: 'asesor_id', label: 'ID del Asesor', type: 'number', required: true, placeholder: 'Ej: 1' },
+          ],
+          submitLabel: 'Asignar',
+          async onSubmit(values) {
+            const advisorId = parseInt(values.asesor_id, 10);
+            if (!advisorId || isNaN(advisorId)) {
+              notify.warning('Introduce un ID de asesor válido');
+              return;
+            }
+            try {
+              await crmApi.post(`/leads/${id}/assign`, { asesor_id: advisorId });
+              notify.success('Lead asignado');
+              closeModal();
+              CrmLeadDetail(params);
+            } catch (err) { notify.error('Error al asignar'); }
+          },
+        });
       });
     }
   } catch (err) {
