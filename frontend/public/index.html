@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CRM Hipotecario - Gestión integral de hipotecas">
+  <meta name="theme-color" content="#1a56db">
+  <title>CRM Hipotecario</title>
+  <link rel="stylesheet" href="../src/styles/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+</head>
+<body>
+  <div id="root">
+    <!-- Navigation Bar -->
+    <nav id="navbar" class="navbar">
+      <div class="navbar-container">
+        <a href="#/" class="navbar-brand">
+          <span class="navbar-logo">🏠</span>
+          <span class="navbar-title">CRM Hipotecario</span>
+        </a>
+        <button class="navbar-toggle" id="navbar-toggle" aria-label="Menú">
+          <span class="navbar-toggle-icon"></span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu">
+          <ul class="navbar-nav" id="navbar-nav">
+            <!-- Dynamic navigation links -->
+          </ul>
+          <div class="navbar-user" id="navbar-user">
+            <!-- User dropdown -->
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Sidebar (CRM/Backoffice) -->
+    <aside id="sidebar" class="sidebar hidden">
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <!-- Dynamic sidebar links -->
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="app" class="main-content">
+      <div class="loading-screen">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer" class="footer">
+      <div class="footer-container">
+        <p>&copy; 2024 CRM Hipotecario. Todos los derechos reservados.</p>
+        <p class="footer-version">v1.0.0</p>
+      </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+  </div>
+
+  <script type="module" src="../src/app.js"></script>
+</body>
+</html>

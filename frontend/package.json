@@ -1,0 +1,12 @@
+{
+  "name": "crm-hipotecario-frontend",
+  "version": "1.0.0",
+  "description": "CRM Hipotecario - JavaScript SPA Frontend",
+  "scripts": {
+    "start": "npx http-server public -p 8080 -c-1",
+    "dev": "npx http-server public -p 8080 -c-1 --cors"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
