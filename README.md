@@ -13,7 +13,8 @@ El sistema cubre el flujo de negocio de principio a fin: captación de leads, al
 - [Arquitectura](#arquitectura)
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Requisitos Previos](#requisitos-previos)
-- [Instalación y Configuración](#instalación-y-configuración)
+- [Inicio rápido con Docker](#inicio-rápido-con-docker)
+- [Instalación y Configuración (sin Docker)](#instalación-y-configuración-sin-docker)
   - [1. Clonar el Repositorio](#1-clonar-el-repositorio)
   - [2. Base de Datos (MySQL)](#2-base-de-datos-mysql)
   - [3. Backend PHP](#3-backend-php)
@@ -85,6 +86,7 @@ CRM_PHP/
 │   │   └── Infrastructure/   #   Base de datos, HTTP (Controllers, Middleware, Router)
 │   ├── tests/                #   Tests unitarios (PHPUnit)
 │   ├── .env.example          #   Plantilla de variables de entorno
+│   ├── Dockerfile            #   Imagen Docker del backend
 │   ├── composer.json
 │   └── phpunit.xml
 │
@@ -98,6 +100,7 @@ CRM_PHP/
 │   │   └── server.js         #   Punto de entrada del servidor
 │   ├── tests/                #   Tests (Node.js test runner)
 │   ├── .env.example          #   Plantilla de variables de entorno
+│   ├── Dockerfile            #   Imagen Docker del BFF
 │   └── package.json
 │
 ├── frontend/                 # SPA — JavaScript vanilla (ES Modules)
@@ -109,21 +112,116 @@ CRM_PHP/
 │   │   ├── styles/           #   Hojas de estilo CSS
 │   │   └── utils/            #   Utilidades (router, estado, helpers)
 │   │   └── app.js            #   Punto de entrada de la SPA
+│   ├── Dockerfile            #   Imagen Docker del frontend
 │   └── package.json
+│
+├── docker/                   # Archivos de soporte Docker
+│   └── mysql/
+│       └── init.sql          #   Script de inicialización (migraciones + seed)
 │
 ├── docs/                     # Documentación técnica
 │   ├── informe-arquitectura-software.md
 │   ├── informe-flujo-ejecucion.md
 │   └── informe-funcionalidad.md
 │
+├── .env.example              # Variables de entorno para Docker Compose
+├── docker-compose.yml        # Orquestación de contenedores
 └── README.md
 ```
 
 ---
 
-## Requisitos Previos
+## Inicio rápido con Docker
 
-Asegúrate de tener instaladas las siguientes herramientas antes de comenzar:
+La forma más sencilla de arrancar todo el proyecto es con **Docker Compose**. Solo necesitas tener instalados:
+
+| Herramienta | Versión mínima |
+|-------------|----------------|
+| **Docker** | 20+ |
+| **Docker Compose** | 2.x (incluido con Docker Desktop) |
+
+### 1. Clonar y configurar
+
+```bash
+git clone https://github.com/luisprosa21-ai/CRM_PHP.git
+cd CRM_PHP
+
+# Crear el archivo de variables de entorno (edita si lo necesitas)
+cp .env.example .env
+```
+
+### 2. Levantar los contenedores
+
+```bash
+docker compose up -d --build
+```
+
+Esto levanta cuatro servicios:
+
+| Servicio | Puerto local | Descripción |
+|----------|-------------|-------------|
+| **mysql** | 3306 | Base de datos MySQL 8.0 (migraciones y seed automáticos) |
+| **backend** | 8000 | API REST PHP 8.2 + Apache |
+| **bff** | 3001 | BFF / API Gateway Node.js |
+| **frontend** | 8080 | SPA JavaScript |
+
+### 3. Acceder a la aplicación
+
+| Servicio | URL |
+|----------|-----|
+| **Frontend** | [http://localhost:8080](http://localhost:8080) |
+| **BFF Health** | [http://localhost:3001/health](http://localhost:3001/health) |
+| **Backend API** | [http://localhost:8000/api](http://localhost:8000/api) |
+
+### 4. Desarrollo local con Docker
+
+Los directorios de código fuente están montados como volúmenes, así que cualquier cambio local se refleja dentro de los contenedores de forma inmediata:
+
+| Servicio | Volúmenes montados |
+|----------|--------------------|
+| **backend** | `./backend` → `/var/www/html` |
+| **bff** | `./bff/src`, `./bff/tests` |
+| **frontend** | `./frontend/public`, `./frontend/src` |
+
+#### Comandos útiles
+
+```bash
+# Ver logs de todos los servicios
+docker compose logs -f
+
+# Ver logs de un servicio concreto
+docker compose logs -f backend
+
+# Detener todos los contenedores
+docker compose down
+
+# Detener y eliminar volúmenes (reset de base de datos)
+docker compose down -v
+
+# Reconstruir un servicio después de cambiar Dockerfile o dependencias
+docker compose up -d --build backend
+
+# Ejecutar tests del backend
+docker compose exec backend ./vendor/bin/phpunit
+
+# Ejecutar tests del BFF
+docker compose exec bff npm test
+
+# Acceder a la consola MySQL
+docker compose exec mysql mysql -uroot -proot crm_hipotecario
+
+# Instalar una nueva dependencia PHP
+docker compose exec backend composer require <paquete>
+
+# Instalar una nueva dependencia npm en el BFF
+docker compose exec bff npm install <paquete>
+```
+
+---
+
+## Requisitos Previos (instalación sin Docker)
+
+Si prefieres ejecutar los servicios directamente en tu máquina sin Docker:
 
 | Herramienta | Versión mínima | Uso |
 |-------------|---------------|-----|
@@ -142,7 +240,7 @@ Asegúrate de tener instaladas las siguientes herramientas antes de comenzar:
 
 ---
 
-## Instalación y Configuración
+## Instalación y Configuración (sin Docker)
 
 ### 1. Clonar el Repositorio
 
