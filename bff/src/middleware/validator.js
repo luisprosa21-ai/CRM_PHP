@@ -29,7 +29,7 @@ function checkType(value, type) {
  * Format validators for common patterns.
  */
 const FORMAT_VALIDATORS = {
-  email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+  email: (v) => /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(v),
   phone: (v) => /^\+?[\d\s\-()]{7,20}$/.test(v),
   url: (v) => /^https?:\/\/.+/.test(v),
   date: (v) => !Number.isNaN(Date.parse(v)),
