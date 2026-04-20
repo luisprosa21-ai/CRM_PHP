@@ -45,11 +45,10 @@ export function initAuth() {
 
 export async function login(email, password, type = 'portal') {
   const api = type === 'portal' ? portalApi : crmApi;
-  const endpoint = type === 'portal' ? '/auth/login' : '/auth/login';
-  const result = await api.request('POST', endpoint, { email, password });
+  const result = await api.post('/login', { email, password });
 
-  const token = result.token;
-  const user = result.user || result.usuario;
+  const token = result.data?.token || result.token;
+  const user = result.data?.user || result.user || result.usuario;
 
   _setApis(token);
   _persist({ token, user });
@@ -60,9 +59,9 @@ export async function login(email, password, type = 'portal') {
 }
 
 export async function register(userData) {
-  const result = await portalApi.post('/auth/register', userData);
-  const token = result.token;
-  const user = result.user || result.usuario;
+  const result = await portalApi.post('/register', userData);
+  const token = result.data?.token || result.token;
+  const user = result.data?.user || result.user || result.usuario;
 
   if (token) {
     _setApis(token);

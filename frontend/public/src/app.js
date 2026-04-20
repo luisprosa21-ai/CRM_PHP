@@ -145,5 +145,8 @@ router.addRoute('/backoffice/audit', BackofficeAudit);
 
 initAuth();
 renderNavbar();
+  // Re-renderizar al cambiar autenticación o ruta
+  store.subscribe('user', () => renderNavbar());
+  window.addEventListener('hashchange', () => renderNavbar(), { once: true });
 updateLayout();
 router.start();

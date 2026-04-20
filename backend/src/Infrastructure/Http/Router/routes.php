@@ -12,61 +12,61 @@ return function (Router $router, Container $container): void {
     // ─── Auth ────────────────────────────────────────────────
     $authController = $container->getAuthController();
     $router->post('/api/auth/login', [$authController, 'login']);
-    $router->post('/api/auth/register', [$authController, 'register'], [$adminMiddleware]);
+    $router->post('/api/auth/register', [$authController, 'register']);
 
     // ─── Leads ───────────────────────────────────────────────
-    $leadController = $container->getLeadController();
-    $router->get('/api/leads', [$leadController, 'index'], [$authMiddleware]);
-    $router->post('/api/leads', [$leadController, 'store'], [$authMiddleware]);
-    $router->get('/api/leads/{id}', [$leadController, 'show'], [$authMiddleware]);
-    $router->post('/api/leads/{id}/assign', [$leadController, 'assign'], [$authMiddleware]);
-    $router->post('/api/leads/{id}/qualify', [$leadController, 'qualify'], [$authMiddleware]);
-    $router->post('/api/leads/{id}/convert', [$leadController, 'convert'], [$authMiddleware]);
+    $leadController = fn() => $container->getLeadController() ; // Usamos una función anónima para retrasar la obtención del controlador hasta que se ejecute la ruta
+    $router->get('/api/leads', fn($params) => $leadController()->index($params), [$authMiddleware]);
+    $router->post('/api/leads', fn($params) => $leadController()->store($params), [$authMiddleware]);
+    $router->get('/api/leads/{id}', fn($params) => $leadController()->show($params), [$authMiddleware]);
+    $router->post('/api/leads/{id}/assign', fn($params) => $leadController()->assign($params), [$authMiddleware]);
+    $router->post('/api/leads/{id}/qualify', fn($params) => $leadController()->qualify($params), [$authMiddleware]);
+    $router->post('/api/leads/{id}/convert', fn($params) => $leadController()->convert($params), [$authMiddleware]);
 
     // ─── Clients ─────────────────────────────────────────────
-    $clientController = $container->getClientController();
-    $router->get('/api/clients', [$clientController, 'index'], [$authMiddleware]);
-    $router->post('/api/clients', [$clientController, 'store'], [$authMiddleware]);
-    $router->get('/api/clients/{id}', [$clientController, 'show'], [$authMiddleware]);
-    $router->put('/api/clients/{id}', [$clientController, 'update'], [$authMiddleware]);
+    $clientController = fn() => $container->getClientController();
+    $router->get('/api/clients', fn($params) => $clientController()->index($params), [$authMiddleware]);
+    $router->post('/api/clients', fn($params) => $clientController()->store($params), [$authMiddleware]);
+    $router->get('/api/clients/{id}', fn($params) => $clientController()->show($params), [$authMiddleware]);
+    $router->put('/api/clients/{id}', fn($params) => $clientController()->update($params), [$authMiddleware]);
 
     // ─── Expedientes ─────────────────────────────────────────
-    $expedienteController = $container->getExpedienteController();
-    $router->get('/api/expedientes', [$expedienteController, 'index'], [$authMiddleware]);
-    $router->post('/api/expedientes', [$expedienteController, 'store'], [$authMiddleware]);
-    $router->get('/api/expedientes/{id}', [$expedienteController, 'show'], [$authMiddleware]);
-    $router->post('/api/expedientes/{id}/transition', [$expedienteController, 'transition'], [$authMiddleware]);
-    $router->post('/api/expedientes/{id}/score', [$expedienteController, 'score'], [$authMiddleware]);
+    $expedienteController = fn() => $container->getExpedienteController();
+    $router->get('/api/expedients', fn($params) => $expedienteController()->index($params), [$authMiddleware]);
+    $router->post('/api/expedients', fn($params) => $expedienteController()->store($params), [$authMiddleware]);
+    $router->get('/api/expedients/{id}', fn($params) => $expedienteController()->show($params), [$authMiddleware]);
+    $router->post('/api/expedients/{id}/transition', fn($params) => $expedienteController()->transition($params), [$authMiddleware]);
+    $router->post('/api/expedients/{id}/score', fn($params) => $expedienteController()->score($params), [$authMiddleware]);
 
     // ─── Tasks ───────────────────────────────────────────────
-    $taskController = $container->getTaskController();
-    $router->get('/api/tasks', [$taskController, 'index'], [$authMiddleware]);
-    $router->post('/api/tasks', [$taskController, 'store'], [$authMiddleware]);
-    $router->post('/api/tasks/{id}/complete', [$taskController, 'complete'], [$authMiddleware]);
+    $taskController = fn() => $container->getTaskController();
+    $router->get('/api/tasks', fn($params) => $taskController()->index($params), [$authMiddleware]);
+    $router->post('/api/tasks', fn($params) => $taskController()->store($params), [$authMiddleware]);
+    $router->post('/api/tasks/{id}/complete', fn($params) => $taskController()->complete($params), [$authMiddleware]);
 
     // ─── Offers ──────────────────────────────────────────────
-    $offerController = $container->getOfferController();
-    $router->get('/api/offers', [$offerController, 'index'], [$authMiddleware]);
-    $router->post('/api/offers', [$offerController, 'store'], [$authMiddleware]);
-    $router->post('/api/offers/{id}/accept', [$offerController, 'accept'], [$authMiddleware]);
+    $offerController = fn() => $container->getOfferController();
+    $router->get('/api/offers', fn($params) => $offerController()->index($params), [$authMiddleware]);
+    $router->post('/api/offers', fn($params) => $offerController()->store($params), [$authMiddleware]);
+    $router->post('/api/offers/{id}/accept', fn($params) => $offerController()->accept($params), [$authMiddleware]);
 
     // ─── Documents ───────────────────────────────────────────
-    $documentController = $container->getDocumentController();
-    $router->get('/api/documents', [$documentController, 'index'], [$authMiddleware]);
-    $router->post('/api/documents', [$documentController, 'upload'], [$authMiddleware]);
-    $router->post('/api/documents/{id}/verify', [$documentController, 'verify'], [$authMiddleware]);
+    $documentController = fn() => $container->getDocumentController();
+    $router->get('/api/documents', fn($params) => $documentController()->index($params), [$authMiddleware]);
+    $router->post('/api/documents', fn($params) => $documentController()->upload($params), [$authMiddleware]);
+    $router->post('/api/documents/{id}/verify', fn($params) => $documentController()->verify($params), [$authMiddleware]);
 
     // ─── Notifications ───────────────────────────────────────
-    $notificationController = $container->getNotificationController();
-    $router->get('/api/notifications', [$notificationController, 'index'], [$authMiddleware]);
-    $router->post('/api/notifications/{id}/read', [$notificationController, 'markRead'], [$authMiddleware]);
+    $notificationController = fn() => $container->getNotificationController();
+    $router->get('/api/notifications', fn($params) => $notificationController()->index($params), [$authMiddleware]);
+    $router->post('/api/notifications/{id}/read', fn($params) => $notificationController()->markRead($params), [$authMiddleware]);
 
     // ─── Audit ───────────────────────────────────────────────
-    $auditController = $container->getAuditController();
-    $router->get('/api/audit', [$auditController, 'index'], [$authMiddleware]);
+    $auditController = fn() => $container->getAuditController();
+    $router->get('/api/audit', fn($params) => $auditController()->index($params), [$authMiddleware]);
 
     // ─── Reports ─────────────────────────────────────────────
-    $reportController = $container->getReportController();
-    $router->get('/api/reports/dashboard', [$reportController, 'dashboard'], [$authMiddleware]);
-    $router->get('/api/reports/pipeline', [$reportController, 'pipeline'], [$authMiddleware]);
+    $reportController = fn() => $container->getReportController();
+    $router->get('/api/reports/dashboard', fn($params) => $reportController()->dashboard($params), [$authMiddleware]);
+    $router->get('/api/reports/pipeline', fn($params) => $reportController()->pipeline($params), [$authMiddleware]);
 };

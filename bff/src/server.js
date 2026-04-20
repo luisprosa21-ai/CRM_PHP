@@ -26,7 +26,8 @@ app.use(helmet());
 // ─── CORS ─────────────────────────────────────────────────────────────────────
 app.use(
   cors({
-    origin: config.cors.origins,
+    //origin: [config.cors.origins],
+    origin: 'http://localhost:8080',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
     credentials: true,
@@ -70,6 +71,7 @@ app.use('/portal', portalRoutes);
 app.use('/crm', crmRoutes);
 app.use('/banks', bankRoutes);
 app.use('/backoffice', backofficeRoutes);
+
 
 // ─── 404 HANDLER ──────────────────────────────────────────────────────────────
 app.use((req, _res, next) => {
@@ -120,6 +122,8 @@ process.on('uncaughtException', (err) => {
   logger.error('Uncaught exception', { error: err.message, stack: err.stack });
   process.exit(1);
 });
+
+console.log('CRM Hipotecario BFF server initialized');
 
 // Export for testing
 module.exports = app;

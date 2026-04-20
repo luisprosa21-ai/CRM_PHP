@@ -47,7 +47,7 @@ router.post(
       });
 
       // Create client in backend
-      const client = await backendProxy.post('/api/clientes', {
+      const client = await backendProxy.post('/api/clients', {
         nombre: req.body.nombre,
         apellido: req.body.apellido,
         email: req.body.email,
@@ -107,7 +107,7 @@ router.post(
         password: req.body.password,
       });
 
-      const user = result.data || result.user || result;
+      const user = result.data.user || result.user || result;
       const token = jwt.sign(
         {
           id: user.id,
@@ -133,7 +133,7 @@ router.post(
  */
 router.get('/profile', authenticateToken, async (req, res, next) => {
   try {
-    const data = await backendProxy.get(`/api/clientes/${req.user.id}`, req.headers.authorization?.split(' ')[1]);
+    const data = await backendProxy.get(`/api/clients/${req.user.id}`, req.headers.authorization?.split(' ')[1]);
     res.json({ success: true, data: data.data || data });
   } catch (err) {
     next(err);
@@ -155,7 +155,7 @@ router.put(
   async (req, res, next) => {
     try {
       const data = await backendProxy.put(
-        `/api/clientes/${req.user.id}`,
+        `/api/clients/${req.user.id}`,
         req.body,
         req.headers.authorization?.split(' ')[1]
       );
@@ -173,7 +173,7 @@ router.put(
 router.get('/expedientes', authenticateToken, async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
-    const data = await backendProxy.get(`/api/expedientes?cliente_id=${req.user.id}`, token);
+    const data = await backendProxy.get(`/api/expedients?cliente_id=${req.user.id}`, token);
     res.json({ success: true, data: data.data || data });
   } catch (err) {
     next(err);

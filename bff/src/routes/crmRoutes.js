@@ -191,7 +191,7 @@ router.get('/clients', async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     const query = new URLSearchParams(req.query).toString();
-    const data = await backendProxy.get(`/api/clientes?${query}`, token);
+    const data = await backendProxy.get(`/api/clients?${query}`, token);
     res.json({ success: true, data: data.data || data });
   } catch (err) {
     next(err);
@@ -208,7 +208,7 @@ router.get('/clients/:id', async (req, res, next) => {
     const id = req.params.id;
 
     const [client, expedientes, documents, activity] = await Promise.all([
-      backendProxy.get(`/api/clientes/${id}`, token),
+      backendProxy.get(`/api/clients/${id}`, token),
       backendProxy.get(`/api/expedientes?cliente_id=${id}`, token).catch(() => ({ data: [] })),
       backendProxy.get(`/api/documentos?cliente_id=${id}`, token).catch(() => ({ data: [] })),
       backendProxy.get(`/api/actividades?cliente_id=${id}`, token).catch(() => ({ data: [] })),
@@ -238,7 +238,7 @@ router.get('/expedientes', async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     const query = new URLSearchParams(req.query).toString();
-    const data = await backendProxy.get(`/api/expedientes?${query}`, token);
+    const data = await backendProxy.get(`/api/expedients?${query}`, token);
     res.json({ success: true, data: data.data || data });
   } catch (err) {
     next(err);

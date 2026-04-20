@@ -114,7 +114,4 @@ export default function renderNavbar() {
     });
   }
 
-  // Re-renderizar al cambiar autenticación o ruta
-  store.subscribe('user', () => renderNavbar());
-  window.addEventListener('hashchange', () => renderNavbar(), { once: true });
 }

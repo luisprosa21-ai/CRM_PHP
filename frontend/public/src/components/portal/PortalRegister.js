@@ -53,10 +53,10 @@ export default function PortalRegister(params) {
     errEl.style.display = 'none';
 
     const data = {
-      firstName: document.getElementById('firstName').value.trim(),
-      lastName: document.getElementById('lastName').value.trim(),
+      nombre: document.getElementById('firstName').value.trim(),
+      apellido: document.getElementById('lastName').value.trim(),
       email: document.getElementById('email').value.trim(),
-      phone: document.getElementById('phone').value.trim(),
+      telefono: document.getElementById('phone').value.trim(),
       password: document.getElementById('password').value,
     };
     if (data.password !== document.getElementById('confirmPassword').value) {

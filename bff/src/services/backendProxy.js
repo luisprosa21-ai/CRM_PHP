@@ -99,7 +99,7 @@ class BackendProxy {
    * @returns {Promise<import('axios').AxiosResponse>}
    */
   async _requestWithRetry(method, path, { token, data, params } = {}) {
-    const maxRetries = 2;
+    const maxRetries = 0; // Set to 2 to enable retries, currently disabled for stability
     let lastError;
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {

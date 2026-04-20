@@ -1,8 +1,9 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libzip-dev \
+        libonig-dev \
         unzip \
         git \
     && docker-php-ext-install pdo pdo_mysql mbstring zip \
@@ -10,6 +11,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
+
+# 3. Instalamos Xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+# 3b. Configuración de Xdebug para depuración remota desde VSCode
+COPY config/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # Set the document root to /var/www/html/public
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public

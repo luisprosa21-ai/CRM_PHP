@@ -125,11 +125,11 @@ class BaseBankAdapter {
 
   /**
    * @param {Function} fn - Async function to execute.
-   * @param {number} [maxRetries=3]
+   * @param {number} [maxRetries=0]
    * @returns {Promise<*>}
    * @private
    */
-  async _retryWithBackoff(fn, maxRetries = 3) {
+  async _retryWithBackoff(fn, maxRetries = 0) {
     let lastError;
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {

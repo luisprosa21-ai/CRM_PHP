@@ -41,7 +41,14 @@ final class ContainerProfiler
             $objectId,
         );
 
-        fwrite(STDERR, $message);
+        // 1. Abrimos el recurso (stream)
+        $stream = fopen('php://stderr', 'w');
+
+        // 2. Verificamos que sea un recurso válido antes de escribir
+        if (is_resource($stream)) {
+            fwrite($stream, $message);
+            fclose($stream); // Es buena práctica cerrarlo
+        }
     }
 
     public function getInstanceCount(): int

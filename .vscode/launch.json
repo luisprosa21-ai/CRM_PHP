@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Listen for Xdebug (Docker)",
+            "type": "php",
+            "request": "launch",
+            "port": 9005,
+            "pathMappings": {
+                "/var/www/html": "${workspaceFolder}/backend"
+            }
+        },
+        {
+            "name": "Debug BFF en Docker",
+            "type": "node",
+            "request": "attach",
+            "port": 9229,
+            "address": "localhost",
+            "localRoot": "${workspaceFolder}/bff",
+            "remoteRoot": "/app",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        }
+    ],
+  "compounds": [
+    {
+      "name": "Debug Todo el Ecosistema",
+      "configurations": [
+        "Listen for Xdebug (Docker)",
+        "Debug BFF en Docker"
+      ]
+    }
+  ]
+}
